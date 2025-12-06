@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
-
+import CategoryBarChart from './CategoryBarChart';
 export default function ExpenseScreen() {
   const db = useSQLiteContext();
 
@@ -196,6 +196,8 @@ return (
        <Text style={[styles.totalText,{ fontSize: 22, fontWeight:"bold"}]}>
         Total Spending ({filterLabel}): ${total.toFixed(2)}
       </Text>
+      
+      <CategoryBarChart categoryTotals={categoryTotals} />
 
       <View>
         {Object.entries(categoryTotals).map(([cat, amt]) => (
