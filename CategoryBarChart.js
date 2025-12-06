@@ -2,46 +2,46 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 export default function CategoryBarChart({ categoryTotals }) {
-  const data = Object.keys(categoryTotals).map((key) => ({
-    category: key,
-    amount: categoryTotals[key],
-  }));
+  const categories = Object.keys(categoryTotals);
+  const amounts = categories.map((c) => categoryTotals[c]);
 
-  if (data.length === 0) {
+  if (categories.length === 0) {
     return <Text style={styles.noData}>No category data to display.</Text>;
   }
 
+  const maxAmount = Math.max(...amounts);
+
   return (
     <View style={styles.container}>
-   
-      <Text style={styles.chartTitle}>Spending by Category</Text>
+      <Text style={styles.title}>Spending by Category</Text>
 
+      
       <View style={styles.axisTitles}>
         <Text style={styles.yAxisTitle}>Category</Text>
-        <Text style={styles.xAxisTitle}>Amount ($)</Text>
+        <Text style={styles.xAxisTitle}>Amount ($)</Text> 
       </View>
 
-   
-      {data.map((item) => {
-       
-        const barWidth = `${Math.min(item.amount * 5, 100)}%`; 
+      {categories.map((category) => {
+        const amount = categoryTotals[category];
+        const widthPercent = (amount / maxAmount) * 100;
+
         return (
-          <View key={item.category} style={styles.row}>
-       
-            <Text style={styles.label}>{item.category}</Text>
+          <View key={category} style={styles.row}>
+            <Text style={styles.label}>{category}</Text>
 
             <View style={styles.barBackground}>
-              <View style={[styles.barFill, { width: barWidth }]} />
+              <View style={[styles.barFill, { width: `${widthPercent}%` }]} />
             </View>
 
-            <Text style={styles.amount}>${item.amount.toFixed(2)}</Text>
+            <Text style={styles.amount}>${amount.toFixed(2)}</Text>
           </View>
         );
       })}
 
+     
       <View style={styles.xAxis}>
         <Text style={styles.axisLabel}>0</Text>
-        <Text style={styles.axisLabel}>Highest</Text>
+        <Text style={styles.axisLabel}>${maxAmount.toFixed(2)}</Text>
       </View>
     </View>
   );
@@ -50,35 +50,34 @@ export default function CategoryBarChart({ categoryTotals }) {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
-    padding: 10,
+    padding: 12,
     backgroundColor: "#1f2937",
     borderRadius: 10,
   },
-  chartTitle: {
+  title: {
     color: "#fbbf24",
     fontSize: 20,
     fontWeight: "700",
-    textAlign: "center",
     marginBottom: 12,
+    textAlign: "center",
   },
   axisTitles: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingHorizontal: 8,
     marginBottom: 6,
-    paddingHorizontal: 5,
   },
   yAxisTitle: {
-    color: "#e5e7eb",
+    color: "#9ca3af",
     fontSize: 12,
-    width: 80,
     fontWeight: "600",
   },
   xAxisTitle: {
-    color: "#e5e7eb",
+    color: "#9ca3af",
     fontSize: 12,
-    flex: 1,
-    textAlign: "right",
     fontWeight: "600",
+    textAlign: "right",
+    width: 60, 
   },
   row: {
     flexDirection: "row",
@@ -89,7 +88,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     width: 80,
     fontSize: 14,
-    fontWeight: "500",
   },
   barBackground: {
     flex: 1,
@@ -109,13 +107,12 @@ const styles = StyleSheet.create({
     width: 60,
     fontSize: 14,
     textAlign: "right",
-    fontWeight: "500",
   },
   xAxis: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 6,
-    paddingHorizontal: 5,
+    paddingHorizontal: 8,
   },
   axisLabel: {
     color: "#9ca3af",
